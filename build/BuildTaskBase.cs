@@ -132,7 +132,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         _ when context.IsRunningOnLinux() => "x86_64-linux-gnu",
         _ when context.IsRunningOnMacOs() => RuntimeInformation.ProcessArchitecture switch
         {
-            Architecture.Arm or Architecture.Arm64 => "arm64-apple-darwin",
+            Architecture.Arm or Architecture.Arm64 => "aarch64-apple-darwin",
             _ => "x86_64-apple-darwin"
         },
         _ => throw new PlatformNotSupportedException("Unsupported Platform")
@@ -144,7 +144,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         PlatformFamily.Linux => "x86_64-linux-gnu",
         PlatformFamily.OSX => isArm64 switch
         {
-            true => "arm64-apple-darwn",
+            true => "aarch64-apple-darwin",
             _ => "x86_64-apple-darwin"
         },
         _ => throw new PlatformNotSupportedException("Unsupported Platform")
