@@ -24,10 +24,12 @@ public sealed class BuildWindowsTask : BuildTaskBase
         var bashCommand = @"C:\msys64\usr\bin\bash";
         var processSettings = new ProcessSettings() { EnvironmentVariables = env };
         var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "windows-x64");
+        var buildFlag = GetBuildConfigure(context);
+        var hostFlag = GetHostConfigure(PlatformFamily.Windows);
 
-        BuildOgg(context, bashCommand, processSettings);
-        BuildVorbis(context, bashCommand, processSettings);
-        BuildLame(context, bashCommand, processSettings);
+        BuildOgg(context, bashCommand, processSettings, buildFlag, hostFlag);
+        BuildVorbis(context, bashCommand, processSettings, buildFlag, hostFlag);
+        BuildLame(context, bashCommand, processSettings, buildFlag, hostFlag);
         BuildFFMpeg(context, bashCommand, processSettings, ffmpegConfigureFlags);
     }
 }

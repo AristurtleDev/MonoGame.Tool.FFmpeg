@@ -1,8 +1,11 @@
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+
 namespace BuildScripts;
 
 public abstract class BuildTaskBase : FrostingTask<BuildContext>
 {
-    protected static void BuildOgg(BuildContext context, string command, ProcessSettings processSettings)
+    protected static void BuildOgg(BuildContext context, string command, ProcessSettings processSettings, string buildFlagValue, string hostFlagValue)
     {
         var artifactsDir = GetFullPathToArtifactDirectory(context);
         processSettings.WorkingDirectory = "./ogg";
@@ -16,7 +19,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         context.StartProcess(command, processSettings);
 
         // Run configure
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{artifactsDir}\" --bindir=\"{artifactsDir}/bin\" --enable-static --disable-shared\"";
+        processSettings.Arguments = $"-c \"./configure --prefix=\"{artifactsDir}\" --build={buildFlagValue} --host={hostFlagValue}\"";
         context.StartProcess(command, processSettings);
 
         // Run make
@@ -28,7 +31,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         context.StartProcess(command, processSettings);
     }
 
-    protected static void BuildVorbis(BuildContext context, string command, ProcessSettings processSettings)
+    protected static void BuildVorbis(BuildContext context, string command, ProcessSettings processSettings, string buildFlagValue, string hostFlagValue)
     {
         var artifactsDir = GetFullPathToArtifactDirectory(context);
         processSettings.WorkingDirectory = "./vorbis";
@@ -42,7 +45,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         context.StartProcess(command, processSettings);
 
         // Run configure
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{artifactsDir}\" --bindir=\"{artifactsDir}/bin\" --enable-static --host=x86_64-w64-mingw32\"";
+        processSettings.Arguments = $"-c \"./configure --prefix=\"{artifactsDir}\" --build={buildFlagValue} --host={hostFlagValue} --disable-docs --disable-exmaples";
         context.StartProcess(command, processSettings);
 
         // Run make
@@ -54,7 +57,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         context.StartProcess(command, processSettings);
     }
 
-    protected static void BuildLame(BuildContext context, string command, ProcessSettings processSettings)
+    protected static void BuildLame(BuildContext context, string command, ProcessSettings processSettings, string buildFlagValue, string hostFlagValue)
     {
         var artifactsDir = GetFullPathToArtifactDirectory(context);
         processSettings.WorkingDirectory = "./lame";
@@ -64,7 +67,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         context.StartProcess(command, processSettings);
 
         // Run configure
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{artifactsDir}\" --bindir=\"{artifactsDir}/bin\" --enable-static --disable-frontend --disable-decoder --host=x86_64-w64-mingw32\"";
+        processSettings.Arguments = $"-c \"./configure --prefix=\"{artifactsDir}\" --build={buildFlagValue} --host={hostFlagValue} --disable-frontend --disable-decoder\"";
         context.StartProcess(command, processSettings);
 
         // Run make
@@ -122,4 +125,31 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         var osConfigureFlags = context.FileReadLines($"ffmpeg.{rid}.config").Where(ignoreCommentsAndNewLines);
         return string.Join(' ', configureFlags) + " " + string.Join(' ', osConfigureFlags);
     }
+
+    protected static string GetBuildConfigure(BuildContext context) => context switch
+    {
+        _ when context.IsRunningOnWindows() => "x86_64-w64-mingw32",
+        _ when context.IsRunningOnLinux() => "x86_64-linux-gnu",
+        _ when context.IsRunningOnMacOs() => RuntimeInformation.ProcessArchitecture switch
+        {
+            Architecture.Arm or Architecture.Arm64 => "arm64-apple-darwin",
+            _ => "x86_64-apple-darwin"
+        },
+        _ => throw new PlatformNotSupportedException("Unsupported Platform")
+    };
+
+    protected static string GetHostConfigure(PlatformFamily platform, bool isArm64 = false) => platform switch
+    {
+        PlatformFamily.Windows => "x86_64-w64-mingw3",
+        PlatformFamily.Linux => "x86_64-linux-gnu",
+        PlatformFamily.OSX => isArm64 switch
+        {
+            true => "arm64-apple-darwn",
+            _ => "x86_64-apple-darwin"
+        },
+        _ => throw new PlatformNotSupportedException("Unsupported Platform")
+    };
+
+
+
 }

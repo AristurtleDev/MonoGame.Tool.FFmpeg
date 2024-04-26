@@ -20,7 +20,7 @@ public sealed class BuildMacOSTask : BuildTaskBase
 
         // if (context.IsUniversalBinary || isArm64)
         // {
-            BuildOsxArm64(context);
+        BuildOsxArm64(context);
         // }
     }
 
@@ -37,10 +37,12 @@ public sealed class BuildMacOSTask : BuildTaskBase
         var bashCommand = @"zsh";
         var processSettings = new ProcessSettings() { EnvironmentVariables = env };
         var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "osx-x64");
+        var buildFlag = GetBuildConfigure(context);
+        var hostFlag = GetHostConfigure(PlatformFamily.OSX);
 
-        BuildOgg(context, bashCommand, processSettings);
-        BuildVorbis(context, bashCommand, processSettings);
-        BuildLame(context, bashCommand, processSettings);
+        BuildOgg(context, bashCommand, processSettings, buildFlag, hostFlag);
+        BuildVorbis(context, bashCommand, processSettings, buildFlag, hostFlag);
+        BuildLame(context, bashCommand, processSettings, buildFlag, hostFlag);
         BuildFFMpeg(context, bashCommand, processSettings, ffmpegConfigureFlags);
     }
 
@@ -57,10 +59,12 @@ public sealed class BuildMacOSTask : BuildTaskBase
         var bashCommand = @"zsh";
         var processSettings = new ProcessSettings() { EnvironmentVariables = env };
         var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "osx-arm64");
+        var buildFlag = GetBuildConfigure(context);
+        var hostFlag = GetHostConfigure(PlatformFamily.OSX, isArm64: true);
 
-        BuildOgg(context, bashCommand, processSettings);
-        BuildVorbis(context, bashCommand, processSettings);
-        BuildLame(context, bashCommand, processSettings);
+        BuildOgg(context, bashCommand, processSettings, buildFlag, hostFlag);
+        BuildVorbis(context, bashCommand, processSettings, buildFlag, hostFlag);
+        BuildLame(context, bashCommand, processSettings, buildFlag, hostFlag);
         BuildFFMpeg(context, bashCommand, processSettings, ffmpegConfigureFlags);
     }
 }

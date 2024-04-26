@@ -21,10 +21,12 @@ public sealed class BuildLinuxTask : BuildTaskBase
         var bashCommand = "sh";
         var processSettings = new ProcessSettings() { EnvironmentVariables = env };
         var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "linux-x64");
+        var buildFlag = GetBuildConfigure(context);
+        var hostFlag = GetHostConfigure(PlatformFamily.Linux);
 
-        BuildOgg(context, bashCommand, processSettings);
-        BuildVorbis(context, bashCommand, processSettings);
-        BuildLame(context, bashCommand, processSettings);
+        BuildOgg(context, bashCommand, processSettings, buildFlag, hostFlag);
+        BuildVorbis(context, bashCommand, processSettings, buildFlag, hostFlag);
+        BuildLame(context, bashCommand, processSettings, buildFlag, hostFlag);
         BuildFFMpeg(context, bashCommand, processSettings, ffmpegConfigureFlags);
     }
 }
