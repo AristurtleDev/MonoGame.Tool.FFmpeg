@@ -112,7 +112,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             // Windows uses mingw for compilation and expects paths to be in unix format
             //  e.g. C:\Users\MonoGame\Desktop\ => /c/Users/MonoGame/Desktop
             fullPath = fullPath.Replace("\\", "/");
-            fullPath = $"/{fullPath[0]}{fullPath[2]}";
+            fullPath = $"/{fullPath[0]}{fullPath[2..]}";
         }
 
         return fullPath;
@@ -140,7 +140,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
 
     protected static string GetHostConfigure(PlatformFamily platform, bool isArm64 = false) => platform switch
     {
-        PlatformFamily.Windows => "x86_64-w64-mingw3",
+        PlatformFamily.Windows => "x86_64-w64-mingw32",
         PlatformFamily.Linux => "x86_64-linux-gnu",
         PlatformFamily.OSX => isArm64 switch
         {

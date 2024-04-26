@@ -16,7 +16,7 @@ public sealed class BuildWindowsTask : BuildTaskBase
         {
             {"PATH", "/usr/bin:/mingw64/bin:$PATH"},
             {"CC", "x86_64-w64-mingw32-gcc"},
-            {"CFLAGS", $"-I{artifactsDir}/include -I/mingw64/include -I/usr/include "},
+            {"CFLAGS", $"-w -I{artifactsDir}/include -I/mingw64/include -I/usr/include "},
             {"CXXFLAGS", "-static"},
             {"LDFLAGS", $"-L{artifactsDir}/lib -L/mingw64/lib -L/usr/lib  --static"}
         };
