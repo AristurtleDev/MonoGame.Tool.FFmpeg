@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 
 namespace BuildScripts;
 
@@ -138,11 +137,11 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         _ => throw new PlatformNotSupportedException("Unsupported Platform")
     };
 
-    protected static string GetHostConfigure(PlatformFamily platform, bool isArm64 = false) => platform switch
+    protected static string GetHostConfigure(PlatformFamily platform, bool isAarch64 = false) => platform switch
     {
         PlatformFamily.Windows => "x86_64-w64-mingw32",
         PlatformFamily.Linux => "x86_64-linux-gnu",
-        PlatformFamily.OSX => isArm64 switch
+        PlatformFamily.OSX => isAarch64 switch
         {
             true => "aarch64-apple-darwin",
             _ => "x86_64-apple-darwin"
