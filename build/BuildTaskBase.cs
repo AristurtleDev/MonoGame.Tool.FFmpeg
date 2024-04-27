@@ -4,102 +4,136 @@ namespace BuildScripts;
 
 public abstract class BuildTaskBase : FrostingTask<BuildContext>
 {
-    protected static void BuildOgg(BuildContext context, string command, ProcessSettings processSettings, string buildFlagValue, string hostFlagValue)
+    protected static void BuildOgg(BuildContext context, BuildSettings buildSettings)
     {
-        var artifactsDir = GetFullPathToArtifactDirectory(context);
-        processSettings.WorkingDirectory = "./ogg";
-
-        // Ensure clean start if we're running locally and testing over and over
-        processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(command, processSettings);
-
-        // Run autogen.sh
-        processSettings.Arguments = $"-c \"./autogen.sh\"";
-        context.StartProcess(command, processSettings);
-
-        // Run configure
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{artifactsDir}\" --build={buildFlagValue} --host={hostFlagValue}\"";
-        context.StartProcess(command, processSettings);
-
-        // Run make
-        processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(command, processSettings);
-
-        // Run make install
-        processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(command, processSettings);
-    }
-
-    protected static void BuildVorbis(BuildContext context, string command, ProcessSettings processSettings, string buildFlagValue, string hostFlagValue)
-    {
-        var artifactsDir = GetFullPathToArtifactDirectory(context);
-        processSettings.WorkingDirectory = "./vorbis";
-
-        // Ensure clean start if we're running locally and testing over and over
-        processSettings.Arguments = $"-c make distclean\"";
-        context.StartProcess(command, processSettings);
-
-        // Run autogen.sh
-        processSettings.Arguments = $"-c \"./autogen.sh\"";
-        context.StartProcess(command, processSettings);
-
-        // Run configure
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{artifactsDir}\" --build={buildFlagValue} --host={hostFlagValue} --disable-docs --disable-exmaples";
-        context.StartProcess(command, processSettings);
-
-        // Run make
-        processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(command, processSettings);
-
-        // Run make install
-        processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(command, processSettings);
-    }
-
-    protected static void BuildLame(BuildContext context, string command, ProcessSettings processSettings, string buildFlagValue, string hostFlagValue)
-    {
-        var artifactsDir = GetFullPathToArtifactDirectory(context);
-        processSettings.WorkingDirectory = "./lame";
+        var processSettings = new ProcessSettings()
+        {
+            WorkingDirectory = "./ogg",
+            EnvironmentVariables = new Dictionary<string, string>
+            {
+                {"CFLAGS", buildSettings.CFlags},
+                {"CXXFLAGS", buildSettings.CXXFlags},
+                {"CPPFLAGS", buildSettings.CPPFlags},
+                {"LDFLAGS", buildSettings.LDFlags}
+            }
+        };
 
         //  Ensure clean start if we're running locally and testing over and over
         processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(command, processSettings);
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
-        // Run configure
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{artifactsDir}\" --build={buildFlagValue} --host={hostFlagValue} --disable-frontend --disable-decoder\"";
-        context.StartProcess(command, processSettings);
+        //  Run autogen.sh to create configuration files
+        processSettings.Arguments = $"-c \"./autogen.sh\"";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
-        // Run make
+        //  Run configure to build make file
+        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+
+        //  Run make
         processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(command, processSettings);
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
         //  Run make install
         processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(command, processSettings);
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
     }
 
-    protected static void BuildFFMpeg(BuildContext context, string command, ProcessSettings processSettings, string configureFlags)
+    protected static void BuildVorbis(BuildContext context, BuildSettings buildSettings)
     {
-        var artifactsDir = GetFullPathToArtifactDirectory(context);
-        processSettings.WorkingDirectory = "./ffmpeg";
+        var processSettings = new ProcessSettings()
+        {
+            WorkingDirectory = "./vorbis",
+            EnvironmentVariables = new Dictionary<string, string>
+            {
+                {"CFLAGS", buildSettings.CFlags},
+                {"CXXFLAGS", buildSettings.CXXFlags},
+                {"CPPFLAGS", buildSettings.CPPFlags},
+                {"LDFLAGS", buildSettings.LDFlags}
+            }
+        };
 
         //  Ensure clean start if we're running locally and testing over and over
         processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(command, processSettings);
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
-        // Run configure
-        configureFlags = $"--prefix=\"{artifactsDir}\" --bindir=\"{artifactsDir}\" {configureFlags}";
-        context.Information($"Building Options: {configureFlags}");
-        processSettings.Arguments = $"-c \"./configure {configureFlags}\"";
-        context.StartProcess(command, processSettings);
+        //  Run autogen.sh to create configuration files
+        processSettings.Arguments = $"-c \"./autogen.sh\"";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
-        // Run make
+        //  Run configure to build make file
+        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-examples --disable-docs --disable-shared";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+
+        //  Run make
         processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(command, processSettings);
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
         //  Run make install
         processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(command, processSettings);
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+    }
+
+    protected static void BuildLame(BuildContext context, BuildSettings buildSettings)
+    {
+        var processSettings = new ProcessSettings()
+        {
+            WorkingDirectory = "./lame",
+            EnvironmentVariables = new Dictionary<string, string>
+            {
+                {"CFLAGS", buildSettings.CFlags},
+                {"CXXFLAGS", buildSettings.CXXFlags},
+                {"CPPFLAGS", buildSettings.CPPFlags},
+                {"LDFLAGS", buildSettings.LDFlags}
+            }
+        };
+
+        //  Ensure clean start if we're running locally and testing over and over
+        processSettings.Arguments = $"-c \"make distclean\"";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+
+        //  Run configure to build make file
+        processSettings.Arguments = $"-c \"./configure --prefix='{buildSettings.PrefixFlag}' --host=\"{buildSettings.HostFlag}\" --disable-frontend --disable-decoder --disable-shared\"";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+
+        //  Run make
+        processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+
+        //  Run make install
+        processSettings.Arguments = $"-c \"make install\"";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+    }
+
+    protected static void BuildFFMpeg(BuildContext context, BuildSettings buildSettings, string configureFlags)
+    {
+        var processSettings = new ProcessSettings()
+        {
+            WorkingDirectory = "./ffmpeg",
+            EnvironmentVariables = new Dictionary<string, string>
+            {
+                {"CFLAGS", buildSettings.CFlags},
+                {"CXXFLAGS", buildSettings.CXXFlags},
+                {"CPPFLAGS", buildSettings.CPPFlags},
+                {"LDFLAGS", buildSettings.LDFlags}
+            }
+        };
+
+        //  Ensure clean start if we're running locally and testing over and over
+        processSettings.Arguments = $"-c \"make distclean\"";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+
+        //  Run configure to build make file
+        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" {configureFlags}";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+
+        //  Run make
+        processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+
+        //  Run make install
+        processSettings.Arguments = $"-c \"make install\"";
+        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
     }
 
     protected static string GetFullPathToArtifactDirectory(BuildContext context)
@@ -148,7 +182,4 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         },
         _ => throw new PlatformNotSupportedException("Unsupported Platform")
     };
-
-
-
 }

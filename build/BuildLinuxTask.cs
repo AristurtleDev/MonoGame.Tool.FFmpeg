@@ -1,3 +1,5 @@
+using System.Net.Mime;
+
 namespace BuildScripts;
 
 [TaskName("Build Linux")]
@@ -9,24 +11,31 @@ public sealed class BuildLinuxTask : BuildTaskBase
 
     public override void Run(BuildContext context)
     {
-        var artifactsDir = GetFullPathToArtifactDirectory(context);
+        // Absolute path to the artifact directory is needed for flags since they don't allow relative path
+        var absoluteArtifactDir = context.MakeAbsolute(new DirectoryPath(context.ArtifactsDir));
 
-        var env = new Dictionary<string, string>
-        {
-            {"CFLAGS", $"-w -I/mingw64/include -I/usr/include -I{artifactsDir}/include"},
-            {"CXXFLAGS", "-static"},
-            {"LDFLAGS", $"-L/mingw64/lib -L/usr/lib -L{artifactsDir}/lib --static"}
-        };
+        // Generate common build directory path
+        var buildDirectory = $"{absoluteArtifactDir}/linux-x86_64";
 
-        var bashCommand = "sh";
-        var processSettings = new ProcessSettings() { EnvironmentVariables = env };
-        var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "linux-x64");
-        var buildFlag = GetBuildConfigure(context);
-        var hostFlag = GetHostConfigure(PlatformFamily.Linux);
+        // Create the build settings used by each library build
+        var buildSettings = new BuildSettings();
+        buildSettings.ShellExecutionPath = "sh";
+        buildSettings.PrefixFlag = buildDirectory;
+        buildSettings.HostFlag = "x86_64-linux-gnu";
+        buildSettings.CFlags = $"-w -I{buildDirectory}/include";
+        buildSettings.CPPFlags = $"-I{buildDirectory}/include";
+        buildSettings.LDFlags = $"-L{buildDirectory}/lib --static";
 
-        BuildOgg(context, bashCommand, processSettings, buildFlag, hostFlag);
-        BuildVorbis(context, bashCommand, processSettings, buildFlag, hostFlag);
-        BuildLame(context, bashCommand, processSettings, buildFlag, hostFlag);
-        BuildFFMpeg(context, bashCommand, processSettings, ffmpegConfigureFlags);
+        // Get the configuration flags that will be used for the FFMpeg build
+        var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "linux-x86_64");
+
+        // Build each library in correct order
+        BuildOgg(context, buildSettings);
+        BuildVorbis(context, buildSettings);
+        BuildLame(context, buildSettings);
+        BuildFFMpeg(context, buildSettings, ffmpegConfigureFlags);
+
+        // Move the built binary from the build directory to the artifact directory
+        context.MoveFile($"{buildDirectory}/bin/ffmpeg", $"{absoluteArtifactDir}/ffmpeg");
     }
 }
