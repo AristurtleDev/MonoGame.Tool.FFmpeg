@@ -89,7 +89,7 @@ public sealed class BuildVorbisTask : FrostingTask<BuildContext>
         context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
         //  Run configure to build make file
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.Prefix}\" --host=\"{buildSettings.Host}\" --disable-examples --disable-docs";
+        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.Prefix}\" --host=\"{buildSettings.Host}\" --disable-examples --disable-docs --disable-shared";
         context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
         //  Run make

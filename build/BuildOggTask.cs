@@ -89,7 +89,7 @@ public sealed class BuildOggTask : FrostingTask<BuildContext>
         context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
         //  Run configure to build make file
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.Prefix}\" --host=\"{buildSettings.Host}\"";
+        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.Prefix}\" --host=\"{buildSettings.Host}\" --disable-shared";
         context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
         //  Run make

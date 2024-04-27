@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 
 namespace BuildScripts;
 
@@ -85,7 +84,7 @@ public sealed class BuildLameTask : FrostingTask<BuildContext>
         context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
         //  Run configure to build make file
-        processSettings.Arguments = $"-c \"./configure --prefix='{buildSettings.Prefix}' --host=\"{buildSettings.Host}\" --disable-frontend --disable-decoder\"";
+        processSettings.Arguments = $"-c \"./configure --prefix='{buildSettings.Prefix}' --host=\"{buildSettings.Host}\" --disable-frontend --disable-decoder --disable-shared\"";
         context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
 
         //  Run make
