@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest- mac-latest, ubuntu-latest]
+        os: [windows-latest, mac-latest, ubuntu-latest]
       fail-fast: false
     steps:
       - name: Expose GitHub Runtime
