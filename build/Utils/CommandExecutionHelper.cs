@@ -26,11 +26,6 @@ public class CommandExecutionHelper
         var processArgs = $"-c \"{pathEnv} {pkgConfigEnv} {command}\"";
 
         _processSettings.Arguments = processArgs;
-        _buildContext.Information(" ");
-        _buildContext.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
-        _buildContext.Information($"Executing Command: {_buildSettings.ShellCommand} \"{string.Join(' ', _processSettings.Arguments)}\"");
-        _buildContext.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
-        _buildContext.Information(" ");
         _buildContext.StartProcess(_buildSettings.ShellCommand, _processSettings);
     }
 }
