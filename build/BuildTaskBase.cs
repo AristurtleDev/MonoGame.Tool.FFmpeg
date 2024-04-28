@@ -28,7 +28,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run configure to build make file
-        processSettings.Arguments = BuildArgument(buildSettings, "./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared");
+        processSettings.Arguments = BuildArgument(buildSettings, $"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared");
         // processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared";
         context.StartProcess(buildSettings.ShellCommand, processSettings);
 
@@ -186,9 +186,9 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
 
     protected static string BuildArgument(BuildSettings buildSettings, string argument)
     {
-        var pathEnv = string.IsNullOrEmpty(buildSettings.Path) ?
-                      string.Empty :
-                      $"export PATH=\"{buildSettings.Path}:$PATH; \"";
+        var pathEnv = string.IsNullOrEmpty(buildSettings.Path)
+                      ? string.Empty
+                      : $"export PATH=\"{buildSettings.Path}:$PATH;\"";
         return $"-c \"{pathEnv}{argument}\"";
     }
 }
