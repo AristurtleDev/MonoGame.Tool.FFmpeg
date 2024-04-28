@@ -12,16 +12,6 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
-        if (!string.IsNullOrEmpty(buildSettings.Path))
-        {
-            processSettings.EnvironmentVariables.Add("PATH", $"{buildSettings.Path}:$PATH");
-        }
-
-        if (!string.IsNullOrEmpty(buildSettings.CCFlags))
-        {
-            processSettings.EnvironmentVariables.Add("CCFLAGS", buildSettings.CCFlags);
-        }
-
         // Ensure clean start if we're running locally and testing over and over
         processSettings.Arguments = $"-c \"make distclean\"";
         context.StartProcess(buildSettings.ShellCommand, processSettings);
