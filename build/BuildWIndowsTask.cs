@@ -38,13 +38,6 @@ public sealed class BuildWindowsTask : BuildTaskBase
         // Get the configuration flags that will be used for the FFMpeg build
         var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "windows-x86_64");
 
-        // Windows requires dependencies be installed in mingw using pacman
-        // context.StartProcess(buildSettings.ShellCommand, new ProcessSettings()
-        // {
-        //     EnvironmentVariables = buildSettings.GetEnvironmentVariables(),
-        //     Arguments = "-c 'pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain mingw-w64-x86_64-mpg123 mingw-w64-x86_64-gtk2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-lame mingw-w64-x86_64-pkg-config nasm yasm'"
-        // });
-
         // Build each library in correct order
         BuildOgg(context, buildSettings);
         BuildVorbis(context, buildSettings);
