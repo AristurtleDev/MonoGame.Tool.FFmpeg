@@ -17,15 +17,20 @@ public class CommandExecutionHelper
     {
         var pathEnv = string.IsNullOrEmpty(_buildSettings.Path) ?
                       string.Empty :
-                    $"export PATH=\"{_buildSettings.Path}:$PATH;\"";
+                    $"export PATH={_buildSettings.Path}:$PATH;";
 
         var pkgConfigEnv = string.IsNullOrEmpty(_buildSettings.PkgConfigPath) && !command.Contains("./configure") ?
                            string.Empty :
-                           $"export PKG_CONFIG_PATH=\"{_buildSettings.PkgConfigPath}:$PKG_CONFIG_PATH;\"";
+                           $"export PKG_CONFIG_PATH={_buildSettings.PkgConfigPath}:$PKG_CONFIG_PATH;";
 
         var processArgs = $"-c \"{pathEnv} {pkgConfigEnv} {command}\"";
 
         _processSettings.Arguments = processArgs;
+        _buildContext.Information(" ");
+        _buildContext.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        _buildContext.Information($"Executing Command: {_buildSettings.ShellCommand} \"{string.Join(' ', _processSettings.Arguments)}\"");
+        _buildContext.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        _buildContext.Information(" ");
         _buildContext.StartProcess(_buildSettings.ShellCommand, _processSettings);
     }
 }
