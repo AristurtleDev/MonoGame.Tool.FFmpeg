@@ -16,13 +16,16 @@ public sealed class BuildLinuxTask : BuildTaskBase
         var buildDirectory = $"{absoluteArtifactDir}/linux-x86_64";
 
         // Create the build settings used by each library build
-        var buildSettings = new BuildSettings();
-        buildSettings.ShellCommand = "sh";
-        buildSettings.PrefixFlag = buildDirectory;
-        buildSettings.HostFlag = "x86_64-linux-gnu";
-        buildSettings.CFlags = $"-w -I{buildDirectory}/include";
-        buildSettings.CPPFlags = $"-I{buildDirectory}/include";
-        buildSettings.LDFlags = $"-L{buildDirectory}/lib --static";
+        var buildSettings = new BuildSettings
+        {
+            ShellCommand = "sh",
+            PrefixFlag = buildDirectory,
+            PkgConfigPath = $"{buildDirectory}/lib/pkgconfig",
+            HostFlag = "x86_64-linux-gnu",
+            CFlags = $"-w -I{buildDirectory}/include",
+            CPPFlags = $"-I{buildDirectory}/include",
+            LDFlags = $"-L{buildDirectory}/lib --static"
+        };
 
         // Get the configuration flags that will be used for the FFMpeg build
         var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "linux-x86_64");

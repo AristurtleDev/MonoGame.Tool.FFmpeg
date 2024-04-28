@@ -29,6 +29,7 @@ public sealed class BuildMacOSTask : BuildTaskBase
             {
                 ShellCommand = "zsh",
                 PrefixFlag = x866BuildDirectory,
+                PkgConfigPath = $"{x866BuildDirectory}/lib/pkgconfig",
                 HostFlag = "x86_64-apple-darwin",
                 CFlags = $"-w -arch x86_64 -I{x866BuildDirectory}/include",
                 CPPFlags = $"-arch x86_64 -I{x866BuildDirectory}/include",
@@ -53,6 +54,7 @@ public sealed class BuildMacOSTask : BuildTaskBase
             {
                 ShellCommand = "zsh",
                 PrefixFlag = arm64BuildDirectory,
+                PkgConfigPath = $"{arm64BuildDirectory}/lib/pkgconfig",
                 HostFlag = "aarch64-apple-darwin",
                 CFlags = $"-w -arch arm64 -I{arm64BuildDirectory}/include",
                 CPPFlags = $"-arch arm64 -I{arm64BuildDirectory}/include",

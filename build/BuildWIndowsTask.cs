@@ -22,15 +22,18 @@ public sealed class BuildWindowsTask : BuildTaskBase
         context.CreateDirectory(buildDirectory);
 
         // Create the build settings used by each library build
-        var buildSettings = new BuildSettings();
-        buildSettings.ShellCommand = @"C:\msys64\usr\bin\bash";
-        buildSettings.PrefixFlag = buildDirectory;
-        buildSettings.HostFlag = "x86_64-w64-mingw32";
-        buildSettings.Path = "/usr/bin:/mingw64/bin";
-        buildSettings.CCFlags = "x86_64-w64-mingw32-gcc";
-        buildSettings.CFlags = $"-w -I{buildDirectory}/include";
-        buildSettings.CPPFlags = $"-I{buildDirectory}/include";
-        buildSettings.LDFlags = $"-L{buildDirectory}/lib --static";
+        var buildSettings = new BuildSettings
+        {
+            ShellCommand = @"C:\msys64\usr\bin\bash",
+            PrefixFlag = buildDirectory,
+            HostFlag = "x86_64-w64-mingw32",
+            PkgConfigPath = $"{buildDirectory}/lib/pkgconfig",
+            Path = "/usr/bin:/mingw64/bin",
+            CCFlags = "x86_64-w64-mingw32-gcc",
+            CFlags = $"-w -I{buildDirectory}/include",
+            CPPFlags = $"-I{buildDirectory}/include",
+            LDFlags = $"-L{buildDirectory}/lib --static"
+        };
 
         // Get the configuration flags that will be used for the FFMpeg build
         var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "windows-x86_64");

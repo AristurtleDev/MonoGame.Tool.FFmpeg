@@ -52,6 +52,11 @@ public class BuildSettings
     public string HostFlag { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or Sts the value to use for the PKG_CONFIG_PATH environment variable.
+    /// </summary>
+    public string PkgConfigPath { get; set; } = string.Empty;
+
+    /// <summary>
     /// Returns a key-value pair dictionary of the environment variables to set for a build.
     /// </summary>
     public IDictionary<string, string> GetEnvironmentVariables()
@@ -76,6 +81,9 @@ public class BuildSettings
 
         if (!string.IsNullOrEmpty(Path))
             environmentVariables.Add("PATH", $"{Path}:$PATH");
+
+        if(!string.IsNullOrEmpty(PkgConfigPath))
+            environmentVariables.Add("PKG_CONFIG_PATH", $"{PkgConfigPath}:$PKG_CONFIG_PATH");
 
         return environmentVariables;
     }
