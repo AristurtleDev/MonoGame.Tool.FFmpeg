@@ -19,7 +19,11 @@ public class CommandExecutionHelper
                       string.Empty :
                     $"export PATH=\"{_buildSettings.Path}:$PATH;\"";
 
-        var processArgs = $"-c \"{pathEnv}{command}\"";
+        var pkgConfigEnv = string.IsNullOrEmpty(_buildSettings.PkgConfigPath) ?
+                           string.Empty :
+                           $"--pkg-config-flags=\"--define-variable=prefix={_buildSettings.PkgConfigPath}\"";
+
+        var processArgs = $"-c \"{pathEnv}{command}{pkgConfigEnv}\"";
 
         _processSettings.Arguments = processArgs;
         _buildContext.StartProcess(_buildSettings.ShellCommand, _processSettings);

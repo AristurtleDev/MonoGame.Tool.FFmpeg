@@ -79,12 +79,6 @@ public class BuildSettings
         if (!string.IsNullOrEmpty(LDFlags))
             environmentVariables.Add("LDFLAGS", LDFlags);
 
-        // if (!string.IsNullOrEmpty(Path))
-        //     environmentVariables.Add("PATH", $"{Path}:$PATH");
-
-        if(!string.IsNullOrEmpty(PkgConfigPath))
-            environmentVariables.Add("PKG_CONFIG_PATH", $"{PkgConfigPath}:$PKG_CONFIG_PATH");
-
         return environmentVariables;
     }
 }
