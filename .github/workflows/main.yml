@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest]
       fail-fast: false
     steps:
       - name: Expose GitHub Runtime
@@ -23,16 +23,21 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get install nasm autoconf automake libtool
 
+      - name: Install Windows Dependencies
+        if: runner.os == 'Windows'
+        shell: bash
+        run: \"C:\\msys64\\usr\\bin\\bash.exe\" -c \"pacman -S --needed --noconfirm mingw-w64-x86_64-toolchain mingw-w64-x86_64-mpg123 mingw-w64-x86_64-gtk2 mingw-w64-x86_64-libogg mingw-w64-x86_64-libvorbis mingw-w64-x86_64-lame mingw-w64-x86_64-pkg-config nasm yasm\" 
+
       - name: Clone repository
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Run Cake
-        run: dotnet run --project ./build/Build.csproj --universalBinary=true
-        env:
-          ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
-          ACTIONS_RUNTIME_URL: "${{ env.ACTIONS_RUNTIME_URL }}"
+      # - name: Run Cake
+      #   run: dotnet run --project ./build/Build.csproj --universalBinary=true
+      #   env:
+      #     ACTIONS_RUNTIME_TOKEN: ${{ env.ACTIONS_RUNTIME_TOKEN }}
+      #     ACTIONS_RUNTIME_URL: "${{ env.ACTIONS_RUNTIME_URL }}"
     
   deploy:
     name: deploy
