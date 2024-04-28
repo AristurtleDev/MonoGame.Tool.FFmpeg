@@ -57,7 +57,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         commandExecutor.ExecuteCommand("./autogen.sh");
 
         // Run configure to build make file
-        commandExecutor.ExecuteCommand($"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-examples --disable-docs --disable-shared");
+        commandExecutor.ExecuteCommand($"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-examples --disable-docs --disable-shared");
 
         // Run make
         commandExecutor.ExecuteCommand($"make -j{Environment.ProcessorCount}");
