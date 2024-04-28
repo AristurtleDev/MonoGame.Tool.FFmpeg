@@ -37,6 +37,13 @@ public sealed class BuildLinuxTask : BuildTaskBase
         BuildFFMpeg(context, buildSettings, ffmpegConfigureFlags);
 
         // Move the built binary from the build directory to the artifact directory
-        context.MoveFile($"{buildDirectory}/bin/ffmpeg", $"{absoluteArtifactDir}/ffmpeg");
+        if(context.FileExists($"{buildDirectory}/bin/ffmpeg"))
+        {
+            context.MoveFile($"{buildDirectory}/bin/ffmpeg", $"{absoluteArtifactDir}/ffmpeg");
+        }
+        else
+        {
+            throw new FileNotFoundException("Binary doesn't exist");
+        }
     }
 }
