@@ -11,7 +11,9 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             WorkingDirectory = "./ogg",
             EnvironmentVariables = new Dictionary<string, string>
             {
+                {"PATH", $"{buildSettings.Path}:$PATH"},
                 {"CFLAGS", buildSettings.CFlags},
+                {"CCFLAGS", buildSettings.CCFlags},
                 {"CXXFLAGS", buildSettings.CXXFlags},
                 {"CPPFLAGS", buildSettings.CPPFlags},
                 {"LDFLAGS", buildSettings.LDFlags}
@@ -46,7 +48,9 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             WorkingDirectory = "./vorbis",
             EnvironmentVariables = new Dictionary<string, string>
             {
+                {"PATH", $"{buildSettings.Path}:$PATH"},
                 {"CFLAGS", buildSettings.CFlags},
+                {"CCFLAGS", buildSettings.CCFlags},
                 {"CXXFLAGS", buildSettings.CXXFlags},
                 {"CPPFLAGS", buildSettings.CPPFlags},
                 {"LDFLAGS", buildSettings.LDFlags}
@@ -81,7 +85,9 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             WorkingDirectory = "./lame",
             EnvironmentVariables = new Dictionary<string, string>
             {
+                {"PATH", $"{buildSettings.Path}:$PATH"},
                 {"CFLAGS", buildSettings.CFlags},
+                {"CCFLAGS", buildSettings.CCFlags},
                 {"CXXFLAGS", buildSettings.CXXFlags},
                 {"CPPFLAGS", buildSettings.CPPFlags},
                 {"LDFLAGS", buildSettings.LDFlags}
@@ -112,7 +118,9 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             WorkingDirectory = "./ffmpeg",
             EnvironmentVariables = new Dictionary<string, string>
             {
+                {"PATH", $"{buildSettings.Path}:$PATH"},
                 {"CFLAGS", buildSettings.CFlags},
+                {"CCFLAGS", buildSettings.CCFlags},
                 {"CXXFLAGS", buildSettings.CXXFlags},
                 {"CPPFLAGS", buildSettings.CPPFlags},
                 {"LDFLAGS", buildSettings.LDFlags}

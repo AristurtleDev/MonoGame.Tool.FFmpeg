@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace BuildScripts;
 
 [TaskName("Build Windows")]
@@ -11,25 +9,41 @@ public sealed class BuildWindowsTask : BuildTaskBase
 
     public override void Run(BuildContext context)
     {
-        // var artifactsDir = GetFullPathToArtifactDirectory(context);
-        // var env = new Dictionary<string, string>
-        // {
-        //     {"PATH", "/usr/bin:/mingw64/bin:$PATH"},
-        //     {"CC", "x86_64-w64-mingw32-gcc"},
-        //     {"CFLAGS", $"-w -I{artifactsDir}/include -I/mingw64/include -I/usr/include "},
-        //     {"CXXFLAGS", "-static"},
-        //     {"LDFLAGS", $"-L{artifactsDir}/lib -L/mingw64/lib -L/usr/lib  --static"}
-        // };
+        // Absolute path to the artifact directory is needed for flags since they don't allow relative path
+        var absoluteArtifactDir = context.MakeAbsolute(new DirectoryPath(context.ArtifactsDir)).ToString();
 
-        // var bashCommand = @"C:\msys64\usr\bin\bash";
-        // var processSettings = new ProcessSettings() { EnvironmentVariables = env };
-        // var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "windows-x64");
-        // var buildFlag = GetBuildConfigure(context);
-        // var hostFlag = GetHostConfigure(PlatformFamily.Windows);
+        // Since we are using mingw to build, paths need to be in unix format
+        // e.g. C:\Users\MonoGame\Desktop\ => /c/Users/MonoGame/Desktop
+        absoluteArtifactDir = absoluteArtifactDir.Replace("\\", "/");
+        absoluteArtifactDir = $"/{absoluteArtifactDir[0]}{absoluteArtifactDir[2..]}";
 
-        // BuildOgg(context, bashCommand, processSettings, buildFlag, hostFlag);
-        // BuildVorbis(context, bashCommand, processSettings, buildFlag, hostFlag);
-        // BuildLame(context, bashCommand, processSettings, buildFlag, hostFlag);
-        // BuildFFMpeg(context, bashCommand, processSettings, ffmpegConfigureFlags);
+        // Generate common build directory path
+        var buildDirectory = $"{absoluteArtifactDir}/windows-x86_64";
+        context.CreateDirectory(buildDirectory);
+
+        // Create the build settings used by each library build
+        var buildSettings = new BuildSettings();
+        buildSettings.ShellExecutionPath = @"C:\msys64\usr\bin\bash";
+        buildSettings.PrefixFlag = buildDirectory;
+        buildSettings.HostFlag = "x86_64-w64-mingw32";
+        buildSettings.Path = "/usr/bin:/mingw64/bin";
+        buildSettings.CCFlags = "x86_64-w64-mingw32-gcc";
+        buildSettings.CFlags = $"-w -I{buildDirectory}/include";
+        buildSettings.CPPFlags = $"-I{buildDirectory}/include";
+        buildSettings.LDFlags = $"-L{buildDirectory}/lib --static";
+
+        // Get the configuration flags that will be used for the FFMpeg build
+        var ffmpegConfigureFlags = GetFFMpegConfigureFlags(context, "windows-x86_64");
+
+        // Build each library in correct order
+        BuildOgg(context, buildSettings);
+        BuildVorbis(context, buildSettings);
+        BuildLame(context, buildSettings);
+        BuildFFMpeg(context, buildSettings, ffmpegConfigureFlags);
+
+        // Move the built binary from the build directory to the artifact directory
+        // Note: For some reason, unlike the linux and mac builds, the windows build will not copy the binary using the
+        // unix like path created. It fails to find it. Instead, a relative path is used here for windows.
+        context.CopyFile($"{context.ArtifactsDir}/windows-x86_64/bin/ffmpeg.exe", $"{context.ArtifactsDir}/ffmpeg.exe");
     }
 }
