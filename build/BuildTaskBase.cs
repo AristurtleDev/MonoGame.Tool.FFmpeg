@@ -22,25 +22,25 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             processSettings.EnvironmentVariables.Add("CCFLAGS", buildSettings.CCFlags);
         }
 
-        //  Ensure clean start if we're running locally and testing over and over
+        // Ensure clean start if we're running locally and testing over and over
         processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run autogen.sh to create configuration files
+        // Run autogen.sh to create configuration files
         processSettings.Arguments = $"-c \"./autogen.sh\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run configure to build make file
+        // Run configure to build make file
         processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run make
+        // Run make
         processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run make install
+        // Run make install
         processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
     }
 
     protected static void BuildVorbis(BuildContext context, BuildSettings buildSettings)
@@ -51,25 +51,25 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
-        //  Ensure clean start if we're running locally and testing over and over
+        // Ensure clean start if we're running locally and testing over and over
         processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run autogen.sh to create configuration files
+        // Run autogen.sh to create configuration files
         processSettings.Arguments = $"-c \"./autogen.sh\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run configure to build make file
+        // Run configure to build make file
         processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-examples --disable-docs --disable-shared";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run make
+        // Run make
         processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run make install
+        // Run make install
         processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
     }
 
     protected static void BuildLame(BuildContext context, BuildSettings buildSettings)
@@ -80,21 +80,21 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
-        //  Ensure clean start if we're running locally and testing over and over
+        // Ensure clean start if we're running locally and testing over and over
         processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run configure to build make file
+        // Run configure to build make file
         processSettings.Arguments = $"-c \"./configure --prefix='{buildSettings.PrefixFlag}' --host=\"{buildSettings.HostFlag}\" --disable-frontend --disable-decoder --disable-shared\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run make
+        // Run make
         processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run make install
+        // Run make install
         processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
     }
 
     protected static void BuildFFMpeg(BuildContext context, BuildSettings buildSettings, string configureFlags)
@@ -105,21 +105,21 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
-        //  Ensure clean start if we're running locally and testing over and over
+        // Ensure clean start if we're running locally and testing over and over
         processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run configure to build make file
+        // Run configure to build make file
         processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" {configureFlags}";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run make
+        // Run make
         processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
 
-        //  Run make install
+        // Run make install
         processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(buildSettings.ShellExecutionPath, processSettings);
+        context.StartProcess(buildSettings.ShellCommand, processSettings);
     }
 
     protected static string GetFullPathToArtifactDirectory(BuildContext context)
@@ -129,7 +129,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         if (context.IsRunningOnWindows())
         {
             // Windows uses mingw for compilation and expects paths to be in unix format
-            //  e.g. C:\Users\MonoGame\Desktop\ => /c/Users/MonoGame/Desktop
+            // e.g. C:\Users\MonoGame\Desktop\ => /c/Users/MonoGame/Desktop
             fullPath = fullPath.Replace("\\", "/");
             fullPath = $"/{fullPath[0]}{fullPath[2..]}";
         }

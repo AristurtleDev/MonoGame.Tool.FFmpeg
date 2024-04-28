@@ -23,7 +23,7 @@ public sealed class BuildWindowsTask : BuildTaskBase
 
         // Create the build settings used by each library build
         var buildSettings = new BuildSettings();
-        buildSettings.ShellExecutionPath = @"C:\msys64\usr\bin\bash";
+        buildSettings.ShellCommand = @"C:\msys64\usr\bin\bash";
         buildSettings.PrefixFlag = buildDirectory;
         buildSettings.HostFlag = "x86_64-w64-mingw32";
         buildSettings.Path = "/usr/bin:/mingw64/bin";

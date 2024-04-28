@@ -1,5 +1,3 @@
-using System.Net.Mime;
-
 namespace BuildScripts;
 
 [TaskName("Build Linux")]
@@ -19,7 +17,7 @@ public sealed class BuildLinuxTask : BuildTaskBase
 
         // Create the build settings used by each library build
         var buildSettings = new BuildSettings();
-        buildSettings.ShellExecutionPath = "sh";
+        buildSettings.ShellCommand = "sh";
         buildSettings.PrefixFlag = buildDirectory;
         buildSettings.HostFlag = "x86_64-linux-gnu";
         buildSettings.CFlags = $"-w -I{buildDirectory}/include";

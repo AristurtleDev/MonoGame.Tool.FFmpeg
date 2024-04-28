@@ -27,7 +27,7 @@ public sealed class BuildMacOSTask : BuildTaskBase
             // Create the build settings used by each library build
             var buildSettings = new BuildSettings()
             {
-                ShellExecutionPath = "zsh",
+                ShellCommand = "zsh",
                 PrefixFlag = x866BuildDirectory,
                 HostFlag = "x86_64-apple-darwin",
                 CFlags = $"-w -arch x86_64 -I{x866BuildDirectory}/include",
@@ -39,7 +39,7 @@ public sealed class BuildMacOSTask : BuildTaskBase
             // Get the configuration flags that will be used for the FFMpeg build
             var x8664FFMpegConfigureFlags = GetFFMpegConfigureFlags(context, "osx-x86_64");
 
-            // // Build each library in correct order
+            // Build each library in correct order
             BuildOgg(context, buildSettings);
             BuildVorbis(context, buildSettings);
             BuildLame(context, buildSettings);
@@ -51,7 +51,7 @@ public sealed class BuildMacOSTask : BuildTaskBase
             // Create the build settings used by each library build
             var buildSettings = new BuildSettings()
             {
-                ShellExecutionPath = "zsh",
+                ShellCommand = "zsh",
                 PrefixFlag = arm64BuildDirectory,
                 HostFlag = "aarch64-apple-darwin",
                 CFlags = $"-w -arch arm64 -I{arm64BuildDirectory}/include",
@@ -69,8 +69,8 @@ public sealed class BuildMacOSTask : BuildTaskBase
             BuildFFMpeg(context, buildSettings, arm64FFMpegConfigureFlags);
         }
 
-        //  Move the build binary from the build directory to the artifact directory.
-        //  If this is a universal build, we'll need to combine both binaries using lipo and output the result of that.
+        // Move the build binary from the build directory to the artifact directory.
+        // If this is a universal build, we'll need to combine both binaries using lipo and output the result of that.
         if (buildx8664 && buildArm64)
         {
             context.StartProcess("lipo", new ProcessSettings()
