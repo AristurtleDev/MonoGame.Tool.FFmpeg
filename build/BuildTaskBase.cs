@@ -6,6 +6,11 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
 {
     protected static void BuildOgg(BuildContext context, BuildSettings buildSettings)
     {
+        context.Information(" ");
+        context.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        context.Information("Building OGG");
+        context.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        context.Information(" ");
         var processSettings = new ProcessSettings()
         {
             WorkingDirectory = "./ogg",
@@ -35,6 +40,11 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
 
     protected static void BuildVorbis(BuildContext context, BuildSettings buildSettings)
     {
+        context.Information(" ");
+        context.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        context.Information("Building Vorbis");
+        context.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        context.Information(" ");
         var processSettings = new ProcessSettings()
         {
             WorkingDirectory = "./vorbis",
@@ -64,6 +74,11 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
 
     protected static void BuildLame(BuildContext context, BuildSettings buildSettings)
     {
+        context.Information(" ");
+        context.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        context.Information("Building Lame");
+        context.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        context.Information(" ");
         var processSettings = new ProcessSettings()
         {
             WorkingDirectory = "./lame",
@@ -89,6 +104,11 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
 
     protected static void BuildFFMpeg(BuildContext context, BuildSettings buildSettings, string configureFlags)
     {
+        context.Information(" ");
+        context.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        context.Information("Building FFMpeg");
+        context.Information("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        context.Information(" ");
         var processSettings = new ProcessSettings()
         {
             WorkingDirectory = "./ffmpeg",
