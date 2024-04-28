@@ -17,30 +17,37 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
+        var commandExecutor = new CommandExecutionHelper(context, processSettings, buildSettings);
+
         // Ensure clean start if we're running locally and testing over and over
-        processSettings.Arguments = BuildArgument(buildSettings, "make distclean");
-        // processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("make distclean");
+        // processSettings.Arguments = BuildArgument(buildSettings, "make distclean");
+        // // processSettings.Arguments = $"-c \"make distclean\"";
+        // context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run autogen.sh to create configuration files
-        processSettings.Arguments = BuildArgument(buildSettings, "./autogen.sh");
-        // processSettings.Arguments = $"-c \"./autogen.sh\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("./autogen.sh");
+        // processSettings.Arguments = BuildArgument(buildSettings, "./autogen.sh");
+        // // processSettings.Arguments = $"-c \"./autogen.sh\"";
+        // context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run configure to build make file
-        processSettings.Arguments = BuildArgument(buildSettings, $"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared");
-        // processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand($"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared");
+        // processSettings.Arguments = BuildArgument(buildSettings, $"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared");
+        // // processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared";
+        // context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run make
-        processSettings.Arguments = BuildArgument(buildSettings, $"make -j{Environment.ProcessorCount}");
-        // processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand($"make -j{Environment.ProcessorCount}");
+        // processSettings.Arguments = BuildArgument(buildSettings, $"make -j{Environment.ProcessorCount}");
+        // // processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
+        // context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run make install
-        processSettings.Arguments = BuildArgument(buildSettings, "make install");
-        // processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("make install");
+        // processSettings.Arguments = BuildArgument(buildSettings, "make install");
+        // // processSettings.Arguments = $"-c \"make install\"";
+        // context.StartProcess(buildSettings.ShellCommand, processSettings);
     }
 
     protected static void BuildVorbis(BuildContext context, BuildSettings buildSettings)
@@ -183,6 +190,11 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         },
         _ => throw new PlatformNotSupportedException("Unsupported Platform")
     };
+
+    private static void ExecuteCommand(BuildContext context, BuildSettings settings, string command)
+    {
+
+    }
 
     protected static string BuildArgument(BuildSettings buildSettings, string argument)
     {
