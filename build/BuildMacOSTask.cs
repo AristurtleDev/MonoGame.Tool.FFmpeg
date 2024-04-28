@@ -39,7 +39,7 @@ public sealed class BuildMacOSTask : BuildTaskBase
             // Get the configuration flags that will be used for the FFMpeg build
             var x8664FFMpegConfigureFlags = GetFFMpegConfigureFlags(context, "osx-x86_64");
 
-            // Build each library in correct order
+            // // Build each library in correct order
             BuildOgg(context, buildSettings);
             BuildVorbis(context, buildSettings);
             BuildLame(context, buildSettings);
@@ -80,11 +80,11 @@ public sealed class BuildMacOSTask : BuildTaskBase
         }
         else if (buildx8664)
         {
-            context.CopyFile($"{arm64BuildDirectory}/bin/ffmpeg", $"{absoluteArtifactDir}/ffmpeg");
+            context.CopyFile($"{x866BuildDirectory}/bin/ffmpeg", $"{absoluteArtifactDir}/ffmpeg");
         }
         else
         {
-            context.CopyFile($"{x866BuildDirectory}/bin/ffmpeg", $"{absoluteArtifactDir}/ffmpeg");
+            context.CopyFile($"{arm64BuildDirectory}/bin/ffmpeg", $"{absoluteArtifactDir}/ffmpeg");
         }
     }
 }

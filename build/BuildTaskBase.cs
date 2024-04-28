@@ -9,16 +9,18 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         var processSettings = new ProcessSettings()
         {
             WorkingDirectory = "./ogg",
-            EnvironmentVariables = new Dictionary<string, string>
-            {
-                {"PATH", $"{buildSettings.Path}:$PATH"},
-                {"CFLAGS", buildSettings.CFlags},
-                {"CCFLAGS", buildSettings.CCFlags},
-                {"CXXFLAGS", buildSettings.CXXFlags},
-                {"CPPFLAGS", buildSettings.CPPFlags},
-                {"LDFLAGS", buildSettings.LDFlags}
-            }
+            EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
+
+        if (!string.IsNullOrEmpty(buildSettings.Path))
+        {
+            processSettings.EnvironmentVariables.Add("PATH", $"{buildSettings.Path}:$PATH");
+        }
+
+        if (!string.IsNullOrEmpty(buildSettings.CCFlags))
+        {
+            processSettings.EnvironmentVariables.Add("CCFLAGS", buildSettings.CCFlags);
+        }
 
         //  Ensure clean start if we're running locally and testing over and over
         processSettings.Arguments = $"-c \"make distclean\"";
@@ -46,15 +48,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         var processSettings = new ProcessSettings()
         {
             WorkingDirectory = "./vorbis",
-            EnvironmentVariables = new Dictionary<string, string>
-            {
-                {"PATH", $"{buildSettings.Path}:$PATH"},
-                {"CFLAGS", buildSettings.CFlags},
-                {"CCFLAGS", buildSettings.CCFlags},
-                {"CXXFLAGS", buildSettings.CXXFlags},
-                {"CPPFLAGS", buildSettings.CPPFlags},
-                {"LDFLAGS", buildSettings.LDFlags}
-            }
+            EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
         //  Ensure clean start if we're running locally and testing over and over
@@ -83,15 +77,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         var processSettings = new ProcessSettings()
         {
             WorkingDirectory = "./lame",
-            EnvironmentVariables = new Dictionary<string, string>
-            {
-                {"PATH", $"{buildSettings.Path}:$PATH"},
-                {"CFLAGS", buildSettings.CFlags},
-                {"CCFLAGS", buildSettings.CCFlags},
-                {"CXXFLAGS", buildSettings.CXXFlags},
-                {"CPPFLAGS", buildSettings.CPPFlags},
-                {"LDFLAGS", buildSettings.LDFlags}
-            }
+            EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
         //  Ensure clean start if we're running locally and testing over and over
@@ -116,15 +102,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         var processSettings = new ProcessSettings()
         {
             WorkingDirectory = "./ffmpeg",
-            EnvironmentVariables = new Dictionary<string, string>
-            {
-                {"PATH", $"{buildSettings.Path}:$PATH"},
-                {"CFLAGS", buildSettings.CFlags},
-                {"CCFLAGS", buildSettings.CCFlags},
-                {"CXXFLAGS", buildSettings.CXXFlags},
-                {"CPPFLAGS", buildSettings.CPPFlags},
-                {"LDFLAGS", buildSettings.LDFlags}
-            }
+            EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
         //  Ensure clean start if we're running locally and testing over and over
