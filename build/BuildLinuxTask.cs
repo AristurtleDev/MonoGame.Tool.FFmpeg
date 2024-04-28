@@ -9,7 +9,7 @@ public sealed class BuildLinuxTask : BuildTaskBase
 
     public override void Run(BuildContext context)
     {
-        context.CopyFile("./fakeffmpeg", "./artifacts/linux-x64/ffmpeg");
+        context.CopyFile("./fakeffmpeg", "./artifacts/ffmpeg");
         // // Absolute path to the artifact directory is needed for flags since they don't allow relative path
         // var absoluteArtifactDir = context.MakeAbsolute(new DirectoryPath(context.ArtifactsDir));
 
