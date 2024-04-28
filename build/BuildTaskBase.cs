@@ -18,23 +18,28 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         };
 
         // Ensure clean start if we're running locally and testing over and over
-        processSettings.Arguments = $"-c \"make distclean\"";
+        processSettings.Arguments = BuildArgument(buildSettings, "make distclean");
+        // processSettings.Arguments = $"-c \"make distclean\"";
         context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run autogen.sh to create configuration files
-        processSettings.Arguments = $"-c \"./autogen.sh\"";
+        processSettings.Arguments = BuildArgument(buildSettings, "./autogen.sh");
+        // processSettings.Arguments = $"-c \"./autogen.sh\"";
         context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run configure to build make file
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared";
+        processSettings.Arguments = BuildArgument(buildSettings, "./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared");
+        // processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared";
         context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run make
-        processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
+        processSettings.Arguments = BuildArgument(buildSettings, $"make -j{Environment.ProcessorCount}");
+        // processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
         context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run make install
-        processSettings.Arguments = $"-c \"make install\"";
+        processSettings.Arguments = BuildArgument(buildSettings, "make install");
+        // processSettings.Arguments = $"-c \"make install\"";
         context.StartProcess(buildSettings.ShellCommand, processSettings);
     }
 
@@ -178,4 +183,12 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         },
         _ => throw new PlatformNotSupportedException("Unsupported Platform")
     };
+
+    protected static string BuildArgument(BuildSettings buildSettings, string argument)
+    {
+        var pathEnv = string.IsNullOrEmpty(buildSettings.Path) ?
+                      string.Empty :
+                      $"export PATH=\"{buildSettings.Path}:$PATH; \"";
+        return $"-c \"{pathEnv}{argument}\"";
+    }
 }
