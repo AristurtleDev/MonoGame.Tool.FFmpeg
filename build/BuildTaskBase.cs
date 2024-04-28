@@ -85,7 +85,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         commandExecutor.ExecuteCommand("make distclean");
 
         // Run configure to build make file
-        commandExecutor.ExecuteCommand($"-c \"./configure --prefix='{buildSettings.PrefixFlag}' --host=\"{buildSettings.HostFlag}\" --disable-frontend --disable-decoder --disable-shared\"");
+        commandExecutor.ExecuteCommand($"./configure --prefix='{buildSettings.PrefixFlag}' --host=\"{buildSettings.HostFlag}\" --disable-frontend --disable-decoder --disable-shared");
 
         // Run make
         commandExecutor.ExecuteCommand($"make -j{Environment.ProcessorCount}");
@@ -113,7 +113,7 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         commandExecutor.ExecuteCommand("make distclean");
 
         // Run configure to build make file
-        commandExecutor.ExecuteCommand($"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" {configureFlags}");
+        commandExecutor.ExecuteCommand($"./configure --prefix=\"{buildSettings.PrefixFlag}\" {configureFlags}");
 
         // Run make
         commandExecutor.ExecuteCommand($"make -j{Environment.ProcessorCount}");
