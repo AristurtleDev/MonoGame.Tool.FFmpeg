@@ -40,9 +40,9 @@ public sealed class BuildWindowsTask : BuildTaskBase
 
         // Build each library in correct order
         BuildOgg(context, buildSettings);
-        // BuildVorbis(context, buildSettings);
-        // BuildLame(context, buildSettings);
-        // BuildFFMpeg(context, buildSettings, ffmpegConfigureFlags);
+        BuildVorbis(context, buildSettings);
+        BuildLame(context, buildSettings);
+        BuildFFMpeg(context, buildSettings, ffmpegConfigureFlags);
 
         // Move the built binary from the build directory to the artifact directory
         // Note: For some reason, unlike the linux and mac builds, the windows build will not copy the binary using the

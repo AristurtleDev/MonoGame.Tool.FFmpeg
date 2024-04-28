@@ -21,33 +21,18 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
 
         // Ensure clean start if we're running locally and testing over and over
         commandExecutor.ExecuteCommand("make distclean");
-        // processSettings.Arguments = BuildArgument(buildSettings, "make distclean");
-        // // processSettings.Arguments = $"-c \"make distclean\"";
-        // context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run autogen.sh to create configuration files
         commandExecutor.ExecuteCommand("./autogen.sh");
-        // processSettings.Arguments = BuildArgument(buildSettings, "./autogen.sh");
-        // // processSettings.Arguments = $"-c \"./autogen.sh\"";
-        // context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run configure to build make file
         commandExecutor.ExecuteCommand($"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared");
-        // processSettings.Arguments = BuildArgument(buildSettings, $"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared");
-        // // processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-shared";
-        // context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run make
         commandExecutor.ExecuteCommand($"make -j{Environment.ProcessorCount}");
-        // processSettings.Arguments = BuildArgument(buildSettings, $"make -j{Environment.ProcessorCount}");
-        // // processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        // context.StartProcess(buildSettings.ShellCommand, processSettings);
 
         // Run make install
         commandExecutor.ExecuteCommand("make install");
-        // processSettings.Arguments = BuildArgument(buildSettings, "make install");
-        // // processSettings.Arguments = $"-c \"make install\"";
-        // context.StartProcess(buildSettings.ShellCommand, processSettings);
     }
 
     protected static void BuildVorbis(BuildContext context, BuildSettings buildSettings)
@@ -63,25 +48,22 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
+        var commandExecutor = new CommandExecutionHelper(context, processSettings, buildSettings);
+
         // Ensure clean start if we're running locally and testing over and over
-        processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("make distclean");
 
         // Run autogen.sh to create configuration files
-        processSettings.Arguments = $"-c \"./autogen.sh\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("./autogen.sh");
 
         // Run configure to build make file
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-examples --disable-docs --disable-shared";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand($"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" --host=\"{buildSettings.HostFlag}\" --disable-examples --disable-docs --disable-shared");
 
         // Run make
-        processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand($"make -j{Environment.ProcessorCount}");
 
         // Run make install
-        processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("make install");
     }
 
     protected static void BuildLame(BuildContext context, BuildSettings buildSettings)
@@ -97,21 +79,19 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
+        var commandExecutor = new CommandExecutionHelper(context, processSettings, buildSettings);
+
         // Ensure clean start if we're running locally and testing over and over
-        processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("make distclean");
 
         // Run configure to build make file
-        processSettings.Arguments = $"-c \"./configure --prefix='{buildSettings.PrefixFlag}' --host=\"{buildSettings.HostFlag}\" --disable-frontend --disable-decoder --disable-shared\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand($"-c \"./configure --prefix='{buildSettings.PrefixFlag}' --host=\"{buildSettings.HostFlag}\" --disable-frontend --disable-decoder --disable-shared\"");
 
         // Run make
-        processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand($"make -j{Environment.ProcessorCount}");
 
         // Run make install
-        processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("make install");
     }
 
     protected static void BuildFFMpeg(BuildContext context, BuildSettings buildSettings, string configureFlags)
@@ -127,21 +107,19 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
             EnvironmentVariables = buildSettings.GetEnvironmentVariables()
         };
 
+        var commandExecutor = new CommandExecutionHelper(context, processSettings, buildSettings);
+
         // Ensure clean start if we're running locally and testing over and over
-        processSettings.Arguments = $"-c \"make distclean\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("make distclean");
 
         // Run configure to build make file
-        processSettings.Arguments = $"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" {configureFlags}";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand($"-c \"./configure --prefix=\"{buildSettings.PrefixFlag}\" {configureFlags}");
 
         // Run make
-        processSettings.Arguments = $"-c \"make -j{Environment.ProcessorCount}\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand($"make -j{Environment.ProcessorCount}");
 
         // Run make install
-        processSettings.Arguments = $"-c \"make install\"";
-        context.StartProcess(buildSettings.ShellCommand, processSettings);
+        commandExecutor.ExecuteCommand("make install");
     }
 
     protected static string GetFullPathToArtifactDirectory(BuildContext context)
@@ -165,42 +143,5 @@ public abstract class BuildTaskBase : FrostingTask<BuildContext>
         var configureFlags = context.FileReadLines("ffmpeg.config").Where(ignoreCommentsAndNewLines);
         var osConfigureFlags = context.FileReadLines($"ffmpeg.{rid}.config").Where(ignoreCommentsAndNewLines);
         return string.Join(' ', configureFlags) + " " + string.Join(' ', osConfigureFlags);
-    }
-
-    protected static string GetBuildConfigure(BuildContext context) => context switch
-    {
-        _ when context.IsRunningOnWindows() => "x86_64-w64-mingw32",
-        _ when context.IsRunningOnLinux() => "x86_64-linux-gnu",
-        _ when context.IsRunningOnMacOs() => RuntimeInformation.ProcessArchitecture switch
-        {
-            Architecture.Arm or Architecture.Arm64 => "aarch64-apple-darwin",
-            _ => "x86_64-apple-darwin"
-        },
-        _ => throw new PlatformNotSupportedException("Unsupported Platform")
-    };
-
-    protected static string GetHostConfigure(PlatformFamily platform, bool isAarch64 = false) => platform switch
-    {
-        PlatformFamily.Windows => "x86_64-w64-mingw32",
-        PlatformFamily.Linux => "x86_64-linux-gnu",
-        PlatformFamily.OSX => isAarch64 switch
-        {
-            true => "aarch64-apple-darwin",
-            _ => "x86_64-apple-darwin"
-        },
-        _ => throw new PlatformNotSupportedException("Unsupported Platform")
-    };
-
-    private static void ExecuteCommand(BuildContext context, BuildSettings settings, string command)
-    {
-
-    }
-
-    protected static string BuildArgument(BuildSettings buildSettings, string argument)
-    {
-        var pathEnv = string.IsNullOrEmpty(buildSettings.Path)
-                      ? string.Empty
-                      : $"export PATH=\"{buildSettings.Path}:$PATH;\"";
-        return $"-c \"{pathEnv}{argument}\"";
     }
 }
